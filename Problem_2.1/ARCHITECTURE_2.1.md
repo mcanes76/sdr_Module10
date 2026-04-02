@@ -99,6 +99,17 @@ return CheckSum;
   - communication simulation
   - plotting/reporting
 
+## End-to-End Workflow
+- The Homework 10 Problem 2.1 workflow should match the lab architecture exactly:
+  1. payload
+  2. append checksum
+  3. packet bits
+  4. BPSK
+  5. AWGN
+  6. demod
+  7. packet reconstruction
+  8. checksum verification
+
 ## Why This Choice
 - The byte-wise XOR implementation is the direct standard representation.
 - It is simpler and less error-prone than manually assembling per-column parity bits in the main path.
@@ -165,13 +176,14 @@ return CheckSum;
 - For each SNR value from `0` to `6` dB:
   1. Generate `10000` random payloads of 24 bytes each.
   2. Compute and append the checksum.
-  3. Modulate the 200 packet bits.
-  4. Add noise at the selected SNR.
-  5. Demodulate back to received bits.
-  6. Compare transmitted and received packet bits to determine truth packet error.
-  7. Re-pack received bits into 25 bytes.
-  8. Recompute checksum over the received packet.
-  9. Count detected packet errors using the nonzero check result.
+  3. Convert the packet to a 200-bit MSB-first vector.
+  4. Apply BPSK modulation.
+  5. Add AWGN at the selected SNR.
+  6. Demodulate back to received bits.
+  7. Compare transmitted and received packet bits to determine truth packet error.
+  8. Reconstruct the received 25-byte packet from the demodulated bits.
+  9. Recompute checksum over the received packet.
+  10. Count detected packet errors using the nonzero check result.
 
 ## MATLAB Interface Proposal
 
@@ -206,11 +218,17 @@ function results = simulate_problem_2_1_per()
   - use `bi2de(..., 'left-msb')` or equivalent logic for bit-to-byte conversion
 
 ## Channel / Modulation Architecture
-- The assignment references the CRC-16 live-lab example for the communication simulation.
-- The exact modulation should follow that live-lab template so results stay consistent with course expectations.
-- Architecture assumption for this document:
-  - use the same modulation, noise, and demodulation flow as the provided CRC-16 example
-  - replace only the error-detection block with the G.9959 parity-check block
+- The communication path should follow the lab architecture exactly:
+  - payload
+  - append checksum
+  - packet bits
+  - BPSK
+  - AWGN
+  - demod
+  - packet reconstruction
+  - checksum verification
+- The `Lab10_scripts` folder should provide the reference modulation and demodulation implementation.
+- Problem 2.1 should reuse that lab-style BPSK/AWGN/demod flow and replace only the error-detection block with the G.9959 checksum verification.
 
 ## Truth Data Definition
 - `truthPacketError = true` if any received packet bit differs from the transmitted packet bit.
@@ -227,7 +245,7 @@ function results = simulate_problem_2_1_per()
   - `perDifference = abs(perTruth - perDetected)`
 
 ## Assumptions
-- The simulation uses the same modem chain as the CRC live-lab example.
+- The simulation uses the lab BPSK/AWGN/demod chain.
 - Random messages are independently generated for each packet.
 - A 24-byte payload is the fixed packet payload size for Problem 2.1.
 - The packet carries exactly one appended checksum byte.
@@ -269,7 +287,7 @@ function results = simulate_problem_2_1_per()
 9. Plot absolute difference versus SNR.
 
 ## Review Focus
-- Confirm the live-lab modulation/demodulation block we should mirror.
+- Confirm the specific `Lab10_scripts` files to mirror for BPSK modulation and demodulation.
 - Confirm whether you want function names exactly as above or adapted to your existing naming style.
 - Confirm whether you want the next step to be:
   - implement the checksum/test files first
