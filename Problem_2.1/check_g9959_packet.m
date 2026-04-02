@@ -16,7 +16,7 @@ function [isDetectedError, checkValue, debug] = check_g9959_packet(packetBytes)
 
     if isempty(packetBytes)
         error('check_g9959_packet:InvalidPacketLength', ...
-            'Packet must contain exactly 25 bytes for Homework 10 Problem 2.1.');
+            'Packet is empty. It must contain exactly 25 bytes for Homework 10 Problem 2.1.');
     end
 
     if any(packetBytes(:) < 0) || any(packetBytes(:) > 255) || ...
