@@ -48,6 +48,72 @@
   - `rngSeedOverride`
   - `makePlotsOverride`
 
+## Using Overrides
+- The simulation script has built-in default settings:
+  - `snrVec = 0:6`
+  - `numFrames = 10000`
+  - `rng(1)`
+  - plots enabled
+- Override variables let you temporarily change those settings before running the script.
+- This is useful for:
+  - quick smoke tests
+  - shorter debug runs
+  - repeatable runs with a chosen random seed
+  - disabling plots during development
+
+## Override Variables
+- `snrVecOverride`
+  - replaces the default SNR vector
+  - example: `0:2` or `[0 2 4 6]`
+- `numFramesOverride`
+  - replaces the default number of packets per SNR
+  - example: `20` for a quick test instead of `10000`
+- `rngSeedOverride`
+  - replaces the default random seed
+  - example: `7`
+- `makePlotsOverride`
+  - enables or disables plot generation
+  - use `false` to skip figures during quick testing
+
+## How To Run With Defaults
+- If you just run the script by itself, it uses the homework-style defaults.
+
+```matlab
+run('simulate_problem_2_1_per.m')
+```
+
+## How To Run With Overrides
+- Define one or more override variables in the MATLAB workspace before running the script.
+- Then run the script normally.
+
+```matlab
+snrVecOverride = 0:1;
+numFramesOverride = 20;
+makePlotsOverride = false;
+run('simulate_problem_2_1_per.m')
+```
+
+- That example performs a short test run using:
+  - SNR values `0` and `1` dB
+  - only `20` packets per SNR
+  - no plots
+
+## Example With a Fixed Seed
+
+```matlab
+snrVecOverride = 0:3;
+numFramesOverride = 100;
+rngSeedOverride = 5;
+makePlotsOverride = false;
+run('simulate_problem_2_1_per.m')
+```
+
+- This is helpful when you want a repeatable debug run.
+
+## Important Note
+- Overrides only affect the current MATLAB workspace session.
+- If you do not define an override variable, the script falls back to its default setting for that parameter.
+
 ## Expected Result
 - `perDetected` should be less than or equal to `perTruth`.
 - Both curves should generally decrease as SNR increases.
