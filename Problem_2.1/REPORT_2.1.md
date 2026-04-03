@@ -63,6 +63,17 @@ Two required checks were implemented and verified:
 
 These tests confirm correct packet formation and basic checksum detection behavior.
 
+### Test Results
+
+The final MATLAB test run from [`run_problem_2_1_tests.m`](c:\REPO\sdr_Module10\Problem_2.1\run_problem_2_1_tests.m) produced:
+
+| Test | Payload / Action | Checksum | Check Value | Result |
+| --- | --- | ---: | ---: | --- |
+| Reversible packet check | payload `6A B8 00 4D 25 17 2F 58 65 89 6B AF 34 E0 07 AB 6A 8F 23 32 CC F7 50 B1` | `0x5B` | `0x00` | PASS |
+| Single-bit error detection | payload `E0 E5 15 09 2B E0 19 6B F5 88 B1 50 AF D5 04 C0 FD BF 47 CA 1A 72 E8 4B`, flip packet bit `58` | `0x79` | `0x40` | PASS |
+
+The reversible test confirms that payload plus checksum forms a valid 25-byte packet. The single-bit test confirms that the checksum detects a one-bit corruption with a nonzero second check.
+
 ## Simulation Structure
 
 The PER simulation follows the same general structure as the live-lab CRC example, but replaces the CRC block with the G.9959 checksum functions.
@@ -85,6 +96,37 @@ The simulation records:
 - `PER_detected`
 - `PER_difference = abs(PER_truth - PER_detected)`
 
+### Simulation Outputs
+
+The MATLAB simulation run exported:
+
+- [`problem_2_1_per_comparison.png`](c:\REPO\sdr_Module10\Problem_2.1\docs\figures\problem_2_1_per_comparison.png)
+- [`problem_2_1_per_difference.png`](c:\REPO\sdr_Module10\Problem_2.1\docs\figures\problem_2_1_per_difference.png)
+- [`problem_2_1_per_results.csv`](c:\REPO\sdr_Module10\Problem_2.1\docs\figures\problem_2_1_per_results.csv)
+- [`problem_2_1_per_results.mat`](c:\REPO\sdr_Module10\Problem_2.1\docs\figures\problem_2_1_per_results.mat)
+
+### PER Comparison Figure
+
+![Problem 2.1 PER Comparison](docs/figures/problem_2_1_per_comparison.png)
+
+### PER Difference Figure
+
+![Problem 2.1 PER Difference](docs/figures/problem_2_1_per_difference.png)
+
+### Numerical Results
+
+The full simulation used `10000` packets per SNR over `0` to `6 dB`.
+
+| SNR (dB) | PER Detected | PER Truth | Difference |
+| --- | ---: | ---: | ---: |
+| 0 | 0.9963 | 1.0000 | 0.0037 |
+| 1 | 0.9948 | 1.0000 | 0.0052 |
+| 2 | 0.9868 | 0.9993 | 0.0125 |
+| 3 | 0.9664 | 0.9912 | 0.0248 |
+| 4 | 0.8860 | 0.9224 | 0.0364 |
+| 5 | 0.6675 | 0.6950 | 0.0275 |
+| 6 | 0.3698 | 0.3785 | 0.0087 |
+
 ## Interpretation
 
 `PER_truth` represents the true packet error probability caused by the AWGN channel.
@@ -96,6 +138,8 @@ The difference between these curves corresponds to undetected packet errors.
 These errors occur when channel noise alters packet bits but the resulting packet still satisfies the checksum condition.
 
 The simulation shows that simple additive checksums provide limited error detection capability.
+
+The simulation results are consistent with that interpretation. At every SNR point, `PER_detected` is below `PER_truth`, which means some corrupted packets are not flagged by the checksum. The largest measured gap in this run occurs at `4 dB`, where the difference is `0.0364`.
 
 ## Discussion
 
