@@ -40,11 +40,35 @@
   - BPSK-like form with `0 -> -1` and `1 -> +1`
 - This table is fixed once the Hamming generator matrix is chosen.
 
+### BPSK Symbol Mapping
+- The transmitted coded bits are mapped to BPSK symbols using:
+  - `1 -> +1`
+  - `0 -> -1`
+- This mapping must match the representation used in the codeword table.
+
 ## Soft-Decision Rule
 - Each received 7-symbol segment is correlated against all 16 valid codewords.
 - Only the real part of the synchronized BPSK segment is used.
 - The selected codeword is the one with the maximum correlation.
 - Absolute value is not used.
+- For each received 7-symbol segment `r`:
+  - compute correlation with each codeword
+
+```text
+metric(i) = sum( r .* codewordsBpsk(i,:) )
+```
+
+  - select the index with the maximum metric
+
+```text
+decodedIndex = argmax(metric)
+```
+
+  - the corresponding binary codeword becomes the decoded output.
+
+### Simulation Consistency
+- Both hard-decision and soft-decision decoding paths must use the exact same transmitted symbols and noise realization.
+- This ensures a fair performance comparison.
 
 ## What Will Be Swept
 - `Eb/N0` or SNR values, following the Live Lab comparison style unless refined later.

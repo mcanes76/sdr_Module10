@@ -37,6 +37,26 @@
 - The decoder selects the codeword with the maximum correlation.
 - Absolute value is not used in the correlation decision.
 
+### Soft Decoding Decision Rule
+- The soft decoder performs maximum likelihood decoding for BPSK over an AWGN channel by selecting the codeword with the largest correlation with the received vector.
+- For a received vector `r` and candidate codeword `c_i`:
+
+```text
+metric(i) = sum( r .* c_i )
+```
+
+- The decoder selects the codeword index `i` that maximizes `metric(i)`.
+- This is equivalent to choosing the codeword with minimum Euclidean distance from the received vector.
+
+### BPSK Mapping Convention
+- The simulation uses the mapping:
+  - bit `1 -> +1`
+  - bit `0 -> -1`
+- This mapping must remain consistent for:
+  - the transmitter
+  - the codeword lookup table
+  - the correlation decoder
+
 ## Problem 2.3 Workflow
 1. generate random 4-bit data blocks
 2. encode with Hamming(7,4)
@@ -67,6 +87,10 @@
   - the 7-bit codeword in binary form
   - the corresponding BPSK-like form with `0 -> -1` and `1 -> +1`
 - This table is the reference set used by the soft decoder.
+- The codeword table should contain:
+  - `codewordsBits  : 16 x 7 binary matrix`
+  - `codewordsBpsk  : 16 x 7 matrix using -1/+1 representation`
+- Each row corresponds to one valid Hamming(7,4) codeword.
 
 ## Expected Plots and Comparisons
 - A primary BER comparison figure should include:
