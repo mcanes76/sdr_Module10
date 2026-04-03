@@ -33,16 +33,12 @@ for idx = 1:length(awgn_vector)
         modulated_original = pskmod(encoded_bits, 2);
         modulated_fair = fair_scale * modulated_original;
 
-        noise_original = randn(1, 7) + 1.0i * randn(1, 7);
-        noise_original = noise_original * sqrt(1 / 2);
-        noise_original = noise_original * sqrt(10^(-awgn_vector(idx) / 10));
+        noise_vector = randn(1, 7) + 1.0i * randn(1, 7);
+        noise_vector = noise_vector * sqrt(1 / 2);
+        noise_vector = noise_vector * sqrt(10^(-awgn_vector(idx) / 10));
 
-        noise_fair = randn(1, 7) + 1.0i * randn(1, 7);
-        noise_fair = noise_fair * sqrt(1 / 2);
-        noise_fair = noise_fair * sqrt(10^(-awgn_vector(idx) / 10));
-
-        rx_original = modulated_original + noise_original;
-        rx_fair = modulated_fair + noise_fair;
+        rx_original = modulated_original + noise_vector;
+        rx_fair = modulated_fair + noise_vector;
 
         demod_original = pskdemod(rx_original, 2);
         demod_fair = pskdemod(rx_fair, 2);
