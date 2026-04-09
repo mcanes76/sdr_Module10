@@ -15,7 +15,7 @@ the_syndrome_table = syndtable(h_parity_matrix);
 
 num_frames = 100000;
 num_coded_bits = num_frames * 7;
-awgn_vector = 0:6;
+awgn_vector = 0:10;
 fair_scale = sqrt(4 / 7);
 
 ber_original_corrected = zeros(1, length(awgn_vector));
